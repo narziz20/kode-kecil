@@ -55,6 +55,8 @@ Tombol besar, petunjuk singkat, tanda bentuk pada warna, dan dukungan penguranga
 
 - `dist/engine.js`: 10 pembangkit aktivitas, aturan, solver, validasi, dan ringkasan misi.
 - `dist/app.js`: UI, instruksi visual, interaksi, animasi, progres, suara, dan panduan.
+- `dist/interactions.js`: panduan Bimo, drag-and-drop mouse/pena/sentuhan, tujuan menyala, dan pengurutan kartu kode.
+- `dist/playful.js`: reaksi Bimo, bantuan berdasarkan percobaan anak, pertanyaan bertahap, dan alat bermain tambahan.
 - `dist/style.css`: tampilan responsif untuk HP/tablet/desktop.
 - `test.cjs`: pemeriksaan 1.000 misi (solusi, konsistensi, keunikan, jawaban keliru, dan konsep wajib).
 - `test-classic.cjs`: pemeriksaan 40 misi lama.
@@ -62,8 +64,26 @@ Tombol besar, petunjuk singkat, tanda bentuk pada warna, dan dukungan penguranga
 ```sh
 node test.cjs
 node test-classic.cjs
+node test-interactions.cjs
+python3 scripts/build-offline.py
 ```
 
 Alur berhasil untuk semua 10 jenis permainan, kondisi dalam pengulangan, fungsi, reset saat kartu terbuka, dan persistensi progres telah diperiksa di browser. Semua 1.000 misi diperiksa oleh tes aturan; tidak semuanya dimainkan manual satu per satu.
 
 Versi ini tersedia lokal. Publikasi eksternal belum dilakukan.
+
+## Interaksi untuk anak
+
+Panduan Bimo menampilkan tiga langkah bergambar di setiap permainan. Kartu bisa diseret ke rumah, tas, gerbong pola, dan kotak kebun. Potongan puzzle bertukar tempat ketika diseret ke potongan lain. Pada editor kode, seret kartu ke rencana atau ke depan kartu lain untuk menyisipkan; seret kartu yang sudah ada untuk mengubah urutannya. Area tujuan menyala selama kartu dibawa. Pegang kartu dekat tepi atas/bawah layar untuk menggulir saat menyeret.
+
+Ketukan tetap tersedia sebagai alternatif, termasuk untuk anak yang belum nyaman menyeret. Memori dan detektif tetap memakai ketukan. Keyboard: Tab untuk memilih, Enter untuk mengaktifkan tombol, Alt + panah kiri/kanan untuk memindahkan kartu kode, dan Escape untuk membatalkan seretan. Gerakan dekoratif mengikuti preferensi pengurangan gerakan perangkat.
+
+`test-interactions.cjs` memeriksa perpindahan kartu, kotak terkunci, urutan kode termasuk blok Ulang/Jurus, batas 30 kartu, status sibuk, reset, serta alternatif ketukan. Pemeriksaan browser dilakukan untuk seret kartu ke rumah, seret panah ke rencana, ketukan tambahan, dan menjalankan Bimo di layar kecil. Dukungan sentuhan memakai Pointer Events; pengujian perangkat sentuh fisik belum dilakukan.
+
+## Bimo, animasi, dan petunjuk bertahap
+
+Bimo dapat diajak tos, berkedip, dan bereaksi saat anak berpikir atau memindahkan kartu. Animasi pendek menandai kartu yang ditempatkan, kartu memori yang terbuka, langkah robot, bunyi yang dimainkan, serta perayaan selesai. Semua animasi baru menghormati pengaturan reduced motion. Menu “Tunjukkan caranya” memperagakan gerakan ketuk/seret tanpa menunjukkan solusi misi.
+
+Saat jawaban belum pas, bantuan menjelaskan hal yang teramati dari percobaan anak (misalnya titik berlebih, gambar kembar pada kebun, petunjuk detektif yang belum cocok, atau langkah robot yang terhalang), lalu memberi satu pertanyaan. Tombol “Bantu sedikit lagi” membuka pertanyaan berikutnya, sampai tiga tahap; jawaban anak tidak diubah otomatis. Bagian terkait ditandai dengan garis putus-putus. Anak dapat mendengarkan petunjuk atau kembali mencoba.
+
+Variasi tambahan: mode coret pilihan detektif yang dapat dibatalkan, menghitung titik per tas dengan ketukan, mencoba bunyi alat musik tanpa menambah kode, dan memperbesar contoh puzzle. Tes memeriksa bantuan di semua 1.000 misi, tidak adanya perubahan jawaban oleh petunjuk, hitungan per tas, coretan yang dapat dibatalkan, serta bantuan setelah program berhenti. Alur bantuan salah pilih dan bertahap, mencoret, mencoba bunyi, serta memperbesar puzzle diperiksa di browser; tampilan Bimo dan panduan diperiksa pada lebar 390 piksel. Belum dilakukan uji pemahaman langsung bersama anak.
