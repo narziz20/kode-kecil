@@ -35,6 +35,7 @@ function diagnoseAttempt() {
 }
 function showThinking(isRetry=false, override='') {
   if(!m||state.busy)return;
+  GameSFX.play(isRetry?'retry':'hint');
   const inPopup=dialog.open&&dialog.dataset.feedback==='true';
   const popup=isRetry||inPopup;
   if(isRetry)state.retryMessage=override;

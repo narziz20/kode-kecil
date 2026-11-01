@@ -71,7 +71,7 @@ function applyDrop(kind, value, target, releaseRect=null) {
   }
   state.selection=null;
   if(releaseRect){arrivalKey=arrivalKey||({sort:'placed-sort-'+from,packing:'placed-packing-'+from,pattern:'pattern-'+to,matrix:'matrix-'+to,mosaic:'tile-'+state.answer[to],story:'story-'+state.answer[to]})[kind];GameMotion.seed(arrivalKey,releaseRect);}
-  state.dotCount=0;renderGame();
+  GameSFX.play('drop');state.dotCount=0;renderGame();
   setStatus(({sort:'Kartu sudah sampai! Mau pindahkan? Seret lagi, ya. 🏡',packing:'Bekal masuk! Yuk, hitung titik di tas. 🎒',pattern:'Gerbong terisi! Coba baca urutannya. 🚂',matrix:'Gambar tertanam! Lihat baris dan kolomnya. 🌱',mosaic:'Tukar tempat! Makin mirip contoh belum? 🧩',command:'Kartu masuk rencana! Tambah lagi atau tekan Jalankan. 🤖',story:'Gambarnya sudah bertukar. Ceritanya masuk akal belum? 🌱',reorder:'Urutannya berubah! Yuk, coba rencana barumu. 🤖'})[kind]);
   const targets={sort:`[data-action="bin"][data-value="${to}"]`,packing:`[data-action="bag"][data-value="${to}"]`,pattern:`[data-action="select"][data-value="${to}"]`,matrix:`.matrix-cell[data-value="${to}"]`,mosaic:`[data-action="tile"][data-value="${to}"]`,command:'.program',reorder:'.program'};
   if(['sort','packing'].includes(kind))animatePlay(targets[kind]);else reactBimo('happy');
