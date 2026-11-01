@@ -67,6 +67,7 @@ node test-classic.cjs
 node test-interactions.cjs
 node test-voice.cjs
 node test-themes.cjs
+node test-motion.cjs
 python3 scripts/build-offline.py
 ```
 
@@ -111,3 +112,9 @@ Semua 20 dunia memakai palet dan ilustrasi lingkungan sendiri. Safari menampilka
 Tema aktif saat membuka dunia maupun langsung membuka misi, bertahan ketika mencoba ulang/berpindah permainan dalam dunia itu, dan kembali netral saat membuka peta. `dist/world-themes.js` menyimpan palet dan ilustrasi SVG lokal. Ilustrasi tetap tersedia offline; tidak memuat gambar eksternal. Latar dekoratif tidak bisa diklik dan tidak dibacakan pembaca layar. Area soal memakai permukaan terang, warna kartu jawaban tetap sama, dan animasi mengikuti pengaturan reduced motion.
 
 Tes memeriksa cakupan 20 dunia, ilustrasi berbeda, pergantian/pembersihan tema, tema pada seluruh 1.000 misi, serta kontras teks putih tombol utama minimal 4,5:1. Tema safari dan laut serta popup pada layar 390 piksel diperiksa di browser.
+
+## Gerakan saat bermain
+
+Potongan puzzle dan kartu perintah bergeser dari posisi sebelumnya. Bimo melangkah antarpetak dengan lengkungan kecil dan pendaratan lembut. Kartu mengikuti titik pegangan saat diseret, sedikit miring mengikuti arah tangan, lalu masuk ke tujuan; kartu yang dilepas di luar sasaran kembali ke asal. Membuka kartu memori tidak mengulang animasi kartu lain.
+
+`dist/motion.js` mengelola transisi visual tanpa menunda perubahan jawaban. Gerakan yang sedang berjalan dibersihkan saat mengganti misi, mengulang permainan, atau mengaktifkan reduced motion. Versi standalone dan ZIP menyertakan modul ini.

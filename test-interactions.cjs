@@ -4,7 +4,7 @@ const el=()=>({open:false,showModal(){this.open=true;},close(){this.open=false;}
 const elements=new Map();
 const document={body:{dataset:{},style:{setProperty(){},removeProperty(){}}},querySelector(s){if(!elements.has(s))elements.set(s,el());return elements.get(s)},querySelectorAll:()=>[],addEventListener(k,f){(listeners[k]??=[]).push(f)}};
 const ctx=vm.createContext({document,window:{addEventListener(){},scrollTo(){}},localStorage:{getItem(){},setItem(){}},structuredClone,console,setTimeout,clearTimeout,requestAnimationFrame:()=>1,cancelAnimationFrame(){},Date});
-for(const file of ['engine.js','interactions.js','playful.js','voice.js','world-themes.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),ctx);
+for(const file of ['engine.js','interactions.js','playful.js','voice.js','world-themes.js','motion.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),ctx);
 const run=s=>vm.runInContext(s,ctx),open=id=>run(`dialog.close();openMission(${id})`);
 const drop=(kind,value,type,index)=>run(`applyDrop(${JSON.stringify(kind)},${JSON.stringify(String(value))},{dataset:{dropKind:${JSON.stringify(type)},value:${JSON.stringify(String(index))}${type==='program'&&index!==undefined?',index:'+JSON.stringify(String(index)):''}}})`);
 for(let level=0;level<5;level++)for(let type=0;type<10;type++)open(level*200+type);

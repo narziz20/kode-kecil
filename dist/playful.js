@@ -62,7 +62,7 @@ function reactBimo(mood='happy') {
 }
 function animatePlay(selector,style='pop') {
   const el=document.querySelector(selector);if(!el)return;
-  el.classList.remove('play-pop','play-wiggle');void el.offsetWidth;el.classList.add('play-'+style);
+  GameMotion.settle(el);
   reactBimo('happy');
 }
 function playfulTools() {
