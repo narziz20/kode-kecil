@@ -22,7 +22,7 @@ const themes=[
 ['dapur','Dapur Mini','🧁','#f5e2d4','🧁 cupcake|🍪 kukis|🍩 donat|🍞 roti'],
 ['olahraga','Arena Bermain','⚽','#dbead2','⚽ bola|🏀 basket|🎾 tenis|🏓 pingpong'],
 ['seni','Studio Seniman','🎨','#f2dfd5','🎨 palet|🖍️ krayon|✂️ gunting|🧩 puzzle'],
-['pantai','Pesta Pantai','🏖️','#f3e9c9','🐚 kerang|🏖️ payung|🪁 layang-layang|🏄 papan-selancar']
+['pantai','Pesta Pantai','🏖️','#f3e9c9','🐚 kerang|⛱️ payung|🪁 layang-layang|🏄 peselancar']
 ].map((a,i)=>({id:i,slug:a[0],name:a[1],icon:a[2],tint:a[3],objects:a[4].split('|').map(s=>({icon:s.split(' ')[0],name:s.split(' ').slice(1).join(' ').replaceAll('-',' ')}))}));
 const levels=[{name:'Penjelajah kecil',short:'Kenalan',description:'Sedikit pilihan, satu aturan sederhana.',icon:'🌱'},{name:'Pemburu pola',short:'Mencoba',description:'Lebih banyak pilihan dan pola berulang.',icon:'🌿'},{name:'Perancang cilik',short:'Merancang',description:'Gabungkan aturan dan rencanakan langkah.',icon:'🌳'},{name:'Pemecah misteri',short:'Menalar',description:'Gunakan kondisi dan beberapa petunjuk.',icon:'✨'},{name:'Kreator hebat',short:'Berkreasi',description:'Gabungkan strategi, fungsi, dan pengulangan.',icon:'🚀'}];
 const types=[

@@ -84,3 +84,7 @@ body:has(.game-factory){background:#f1f5f9!important}.factory-brief{display:flex
 @media(max-width:1000px){.factory-workshop{grid-template-columns:1fr}.factory-stage{min-height:250px}.factory-console{width:100%}.factory-spellbox .palette{justify-content:center}.factory-spellbox .command{max-width:260px}}
 @media(max-width:700px){.factory-brief{padding:15px;gap:10px;border-width:3px;border-radius:23px}.factory-buddy{font-size:30px;padding:5px;border-width:3px}.factory-brief h2{font-size:20px}.factory-brief p{font-size:12px}.factory-listen{min-width:48px;min-height:48px;font-size:24px}.factory-path .visual-machine-key>span{gap:7px;padding:10px}.factory-color .machine-swatch{width:34px;height:34px}.factory-pair .picture-card{width:91px;height:105px;border-radius:22px}.factory-pair .object{font-size:42px}.factory-pair .big-picture .object{font-size:65px}.factory-arrow{font-size:33px}.factory-stage{padding:28px 13px;border-width:3px}.factory-spellbox{padding:18px;border-width:4px;border-radius:26px}.factory-run{font-size:21px}.factory-spellbox .command small{font-size:16px}.factory-spellbox .command{min-width:110px}.factory-pair b{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.factory-stage.is-magic .machine-output{animation:none}}
+
+.story-soil-pot{width:1.25em;height:1.25em;display:inline-block;vertical-align:middle}
+
+.lesson-illustration{display:inline-block;width:1.35em;height:1.35em;vertical-align:middle}.big-scene .lesson-illustration{width:1.5em;height:1.5em}
