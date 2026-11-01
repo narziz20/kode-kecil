@@ -2,7 +2,7 @@
 // Pointer events support mouse, pen and touch; native buttons remain usable by keyboard.
 const playGuides = {
   memory: ['Cari dua kartu kembar!', '👆 Buka kartu', '👀 Ingat gambar + warna', '🐾 Temukan kembarnya'],
-  sort: ['Antar kartu ke rumahnya!', '👀 Lihat nama rumah', '✋ Seret satu kartu', '🏡 Lepas di rumah yang cocok'],
+  sort: ['Antar kartu ke rumahnya!', '👀 Lihat warna & gambar rumah', '✋ Seret satu kartu', '🏡 Lepas di rumah yang cocok'],
   pattern: ['Ayo, lengkapi keretanya!', '👀 Lihat urutan gambar', '✋ Seret gambar pilihan', '🚂 Isi gerbong bertanda ?'],
   mosaic: ['Satukan gambar yang terpotong!', '👀 Lihat gambar contoh', '✋ Seret satu potongan', '🧩 Lepas untuk bertukar tempat'],
   matrix: ['Bantu isi kebun ini!', '👀 Cari gambar yang belum ada', '✋ Seret gambar ke kotak', '🌱 Tiap baris dan kolom beda'],

@@ -2,7 +2,7 @@
 // Hints describe the child's current attempt, then ask one question at a time.
 const thinkingQuestions = {
   memory:['Gambarnya sama. Warna bingkainya juga sama, belum?', 'Ingat satu kartu dulu. Di mana kamu pernah melihat kembarnya?', 'Sebut gambar dan warnanya pelan-pelan saat kartu terbuka.'],
-  sort:['Nama rumah ini meminta warna atau gambar apa?', 'Coba bandingkan satu kartu dengan tulisan di rumahnya.', 'Kalau ada DAN, dua-duanya harus cocok. Kalau ATAU, cukup salah satu.'],
+  sort:['Lihat rumahnya. Warna atau gambar apa yang kamu lihat?', 'Coba lihat satu kartu dan rumahnya. Warna atau gambarnya sudah sama?', 'Kalau ada DAN, dua-duanya harus cocok. Kalau ATAU, cukup salah satu.'],
   pattern:['Coba sebut gambar dari kiri. Bagian mana yang muncul lagi?', 'Lihat dua kelompok yang sama. Setelah kelompok itu, apa yang datang?', 'Periksa gambar dan warna secara terpisah. Keduanya mengikuti pola apa?'],
   mosaic:['Lihat tepi gambar. Garis mana yang bisa menyambung?', 'Cari potongan langit. Di contoh, langit ada di bagian mana?', 'Bandingkan satu sudut dulu. Apakah warna di kedua tepinya cocok?'],
   matrix:['Lihat satu baris ke samping ↔. Ada gambar kembar?', 'Sekarang lihat ke atas dan bawah ↕. Ada gambar kembar juga?', 'Cari baris yang tinggal satu kotak kosong. Gambar apa yang belum ada?'],
