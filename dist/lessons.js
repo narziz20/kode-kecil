@@ -1,0 +1,50 @@
+/* Additional visual lessons. Original mission IDs stay stable for saved progress. */
+(()=>{
+const baseMake=KK.make,baseValidate=KK.validate,baseSolution=KK.solution,baseDescribe=KK.describe;
+const additions=[['cause','Sebab Akibat','☀️','Lihat kejadian, pilih tindakan.'],['sequence','Urutan Cerita','🌱','Susun gambar dari awal sampai akhir.'],['debug','Detektif Kode','🔧','Perbaiki langkah yang tertukar.']];
+KK.types.push(...additions.map(([id,name,icon,brief])=>({id,name,icon,brief,skill:brief,goal:brief,off:'Peragakan urutannya dengan benda di rumah.',reflect:'Apa yang membuatmu memilih langkah itu?'})));
+const stories=[["Ayam tumbuh", ["🥚", "🐣", "🐥"], ["telur", "menetas", "anak ayam"]], ["Bunga tumbuh", ["🌰", "🌱", "🌼"], ["benih", "tunas", "bunga"]], ["Pakai sepatu", ["🦶", "🧦", "👟"], ["kaki kosong", "kaus kaki", "sepatu"]], ["Buka hadiah", ["🎁", "📦", "🧸"], ["hadiah terbungkus", "buka kotak", "ambil boneka"]], ["Gambar matahari", ["📄", "✏️", "☀️"], ["kertas kosong", "gambar lingkaran", "beri sinar"]], ["Pisang untuk camilan", ["🍌", "🤲", "😋"], ["ambil pisang", "kupas kulit", "makan pisang"]], ["Cuci tangan", ["🚰", "🧼", "👐", "🧻"], ["basahi tangan", "beri sabun", "bilas tangan", "keringkan"]], ["Tanam di pot", ["🪴", "🌰", "💧", "🌱"], ["siapkan tanah", "masukkan benih", "beri air", "tunas tumbuh"]], ["Surat untuk teman", ["📝", "✉️", "📮", "📬"], ["tulis surat", "masukkan amplop", "kirim surat", "surat diterima"]], ["Buat teh bersama orang tua", ["🫖", "🍵", "⏳", "😋"], ["orang tua seduh teh", "tuang ke cangkir", "tunggu dingin", "minum"]], ["Siap tidur", ["🪥", "👕", "🛏️", "😴"], ["sikat gigi", "pakai piyama", "masuk kasur", "tidur"]], ["Kupu-kupu tumbuh", ["🥚", "🐛", "🟤", "🦋"], ["telur", "ulat", "kepompong", "kupu-kupu"]], ["Piknik", ["🧺", "🥪", "🌳", "🧻", "🏠"], ["siapkan keranjang", "masukkan bekal", "makan di taman", "bersihkan sampah", "pulang"]], ["Roti selai", ["🍞", "🫙", "🔪", "🥪", "😋"], ["ambil roti", "buka selai", "oles dengan pisau tumpul", "tutup roti", "makan"]], ["Buat layang-layang", ["🪵", "◇", "🖍️", "🧵", "🪁"], ["siapkan rangka", "pasang kertas", "beri warna", "ikat benang", "terbangkan"]], ["Mobil mainan", ["🔋", "🚗", "🏁"], ["pasang baterai", "nyalakan mobil", "mobil berjalan"]], ["Baca buku", ["📚", "📖", "🔖"], ["ambil buku", "buka dan baca", "pasang pembatas"]], ["Isi botol", ["🍶", "🚰", "🧢"], ["buka botol", "isi air", "pasang tutup"]], ["Es mencair", ["🧊", "☀️", "💧"], ["es beku", "terkena hangat", "menjadi air"]], ["Pintu rumah", ["🔑", "🚪", "🚶"], ["buka kunci", "buka pintu", "masuk rumah"]], ["Rapikan mainan", ["🧩", "📦", "🗄️"], ["kumpulkan mainan", "masukkan kotak", "simpan di rak"]], ["Siap melukis", ["📄", "🎨", "🖌️", "🖼️"], ["siapkan kertas", "pilih cat", "sapukan kuas", "lukisan selesai"]], ["Cuci apel", ["🍎", "🚰", "🧻", "😋"], ["ambil apel", "bilas air", "keringkan", "makan"]], ["Naik sepeda", ["🪖", "🚲", "🦶", "🏁"], ["pakai helm", "naik sepeda", "kayuh pedal", "sampai tujuan"]], ["Buat balon", ["🎈", "💨", "🪢", "🧵"], ["ambil balon kosong", "orang tua pompa", "ikat ujung", "pasang tali"]], ["Cuci piring bersama", ["🍽️", "🧽", "🚰", "🗄️"], ["piring kotor", "gosok sabun", "bilas air", "simpan setelah kering"]], ["Menyeberang bersama orang tua", ["🚶", "🛑", "👀", "🚦"], ["menuju zebra cross", "berhenti di tepi", "lihat bersama orang tua", "menyeberang saat aman"]], ["Menanam pohon", ["🕳️", "🌳", "🟤", "💧", "🌿"], ["buat lubang", "letakkan bibit", "tutup dengan tanah", "siram", "daun tumbuh"]], ["Bersiap sekolah", ["🛏️", "🚿", "👕", "🎒", "🏫"], ["bangun", "mandi", "pakai seragam", "ambil tas", "pergi sekolah"]], ["Pesawat kertas", ["📄", "📐", "📐", "✈️", "🛫"], ["siapkan kertas", "lipat tengah", "lipat sayap", "pesawat jadi", "terbangkan"]]];
+const situations=[
+['🌧️','Hujan turun. Agar badan tidak basah, pakai apa?',['☂️','🕶️','🧢'],'payung|kacamata hitam|topi','Benda mana yang bisa menahan tetesan air?'],
+['🌱 🏜️','Tanah tanaman kering. Apa yang dibutuhkan?',['💧','🧸','🪨'],'air|boneka|batu','Apa yang bisa membasahi tanah?'],
+['🌙 🛏️','Sudah malam dan mengantuk. Apa langkah berikutnya?',['😴','⚽','🥁'],'tidur|main bola|main drum','Apa yang membuat tubuh beristirahat?'],
+['🧼 👐','Tangan sudah diberi sabun. Selanjutnya?',['🚰','🍎','🧤'],'bilas air|makan apel|pakai sarung tangan','Bagaimana menghilangkan sabun dari tangan?'],
+['🚦 🔴','Bimo tiba di lampu merah. Bimo harus…',['🛑','🏃','🚴'],'berhenti|berlari|bersepeda','Warna merah meminta kita menunggu atau bergerak?'],
+["🔦 🌑", "Ruangan gelap. Agar terlihat, pakai apa?", ["🔦", "🧸", "🥁"], "senter|boneka|drum", "Benda mana yang mengeluarkan cahaya?"],
+["🧃 💦", "Air tumpah di meja. Bersihkan dengan apa?", ["🧽", "📚", "🪁"], "lap|buku|layang-layang", "Benda mana yang menyerap air?"],
+["☀️ 🧢", "Matahari terik. Lindungi kepala dengan apa?", ["🧢", "🧦", "🧤"], "topi|kaus kaki|sarung tangan", "Mana yang dipakai di kepala?"],
+["🧊 ☀️", "Es dibiarkan di tempat hangat. Es menjadi apa?", ["💧", "🪨", "🌱"], "air|batu|tunas", "Pernah melihat es di luar kulkas?"],
+["🚲 🪖", "Bimo mau bersepeda. Lindungi kepala dengan apa?", ["🪖", "🧣", "👓"], "helm|syal|kacamata", "Mana yang keras dan menutup kepala?"],
+["📄 🌬️", "Kertas tertiup angin. Supaya tetap di meja, gunakan apa?", ["🪨", "🪶", "🫧"], "batu pemberat|bulu|gelembung", "Mana yang cukup berat menahan kertas?"],
+["🪴 💧💧", "Tanah masih basah. Perlu ditambah air sekarang?", ["✋", "🚿", "🪣"], "tunggu dulu|siram banyak|tuang seember", "Apa yang terjadi kalau airnya terlalu banyak?"],
+["🚦 🟢 👨‍👧", "Lampu pejalan kaki hijau dan jalan aman. Bersama orang tua kita…", ["🚶", "⚽", "🛏️"], "menyeberang|main bola|tidur", "Apa tujuan kita menunggu di zebra cross?"],
+["🧩 📦", "Mainan sudah masuk kotak. Supaya rapi, kotaknya ditaruh di mana?", ["🗄️", "🚪", "🛁"], "rak|depan pintu|bak mandi", "Tempat mana yang tidak menghalangi jalan?"],
+["🫖 ♨️", "Minuman masih panas. Sebelum minum, kita…", ["⏳", "🏃", "🥤"], "tunggu dingin|berlari|langsung minum", "Apa yang berubah kalau kita menunggu?"]
+];
+KK.make=id=>{
+ if(id<1000)return baseMake(id);
+ if(!Number.isInteger(id)||id>=1045)throw Error('Nomor misi tidak valid');
+ const k=Math.floor((id-1000)/15),n=(id-1000)%15,l=Math.floor(n/3),t=KK.types[10+k];
+ const m={id,type:t.id,title:t.name,skill:t.skill,brief:t.brief,level:l,theme:n%20,round:n%3};
+ if(k===0){m.questions=Array.from({length:Math.min(l+1,5)},(_,j)=>{const x=situations[(n+j)%situations.length],shift=(n+j)%3;return {scene:x[0],text:x[1],choices:x[2].map((icon,i)=>({icon,name:x[3].split('|')[i],correct:i===0})).slice(shift).concat(x[2].map((icon,i)=>({icon,name:x[3].split('|')[i],correct:i===0})).slice(0,shift)),clue:x[4]};});}
+ else{const story=stories[(k-1)*15+n],size=story[1].length;m.story=story[0];m.items=story[1].slice(0,size).map((icon,i)=>({icon,name:story[2][i]}));m.solution=KK.range(size);m.tiles=[...m.solution];if(k===2){for(let j=0;j<(l>=3?2:1);j++){const a=j*2;[m.tiles[a],m.tiles[a+1]]=[m.tiles[a+1],m.tiles[a]];}}else m.tiles.reverse();}
+ return m;
+};
+KK.validate=(m,a)=>m.type==='cause'?Array.isArray(a)&&a.length===m.questions.length&&a.every((v,i)=>Number.isInteger(v)&&m.questions[i].choices[v]?.correct):['sequence','debug'].includes(m.type)?JSON.stringify(a)===JSON.stringify(m.solution):baseValidate(m,a);
+KK.solution=m=>m.type==='cause'?m.questions.map(q=>q.choices.findIndex(c=>c.correct)):m.id>=1000?m.solution:baseSolution(m);
+KK.describe=m=>m.id>=1000?m.brief:baseDescribe(m);
+})();
+function isStory(){return ['sequence','debug'].includes(m.type);}
+function renderLesson(){
+ if(m.type==='cause'){const j=state.question||0,q=m.questions[j];return `<section class="cause-question"><span class="round-dots" aria-label="Soal ${j+1} dari ${m.questions.length}">${m.questions.map((_,i)=>`<i class="${i<=j?'active':''}"></i>`).join('')}</span><div class="cause-scene"><h2>${q.text.split('. ')[0]}</h2><div class="big-scene" aria-hidden="true">${q.scene}</div></div><p class="cause-prompt">${q.text.split('. ').slice(1).join('. ')||'Pilih yang cocok!'}</p><div class="visual-choices">${q.choices.map((c,i)=>btn('cause',j+':'+i,`<span aria-hidden="true">${c.icon}</span>`,`visual-choice ${state.answer[j]===i?'selected':''}`,c.name)).join('')}</div></section>`;}
+
+ return `<div class="story-heading"><span class="pill">${m.type==='debug'?'🔧 Ada langkah tertukar':'🌱 Dari awal ke akhir'}</span><h2>${m.story}</h2></div><div class="story-track">${state.answer.map((v,i)=>btn('story',i,`<small>${i+1}</small><span aria-hidden="true">${m.items[v].icon}</span><b>${m.items[v].name}</b>`,`story-tile ${state.selection===i?'selected':''}`,`Langkah ${i+1}: ${m.items[v].name}`)).join('')}</div>`;
+}
+function lessonClue(){if(m.type==='cause'){const i=m.questions.findIndex((q,j)=>!q.choices[state.answer[j]]?.correct);return m.questions[Math.max(0,i)].clue;}return 'Bayangkan kamu melakukan ceritanya. Apa yang harus terjadi lebih dulu sebelum langkah ini?';}
+
+function shortInstruction(){return ({memory:'Cari dua kartu kembar!',sort:m.ruleText?'Ikuti aturan rumahnya.':'Samakan warna atau gambarnya!',pattern:'Isi gerbong yang kosong.',mosaic:'Susun seperti gambar contoh.',matrix:'Isi kotak. Jangan ada gambar kembar!',factory:'Susun mesin. Samakan hasilnya!',route:'Susun panah. Antar Bimo ke 🚩.',music:'Dengar, lalu tirukan iramanya.',detective:'Cari gambar sesuai petunjuk.',packing:'Isi tas sesuai jumlah titik.',sequence:'Seret gambar. Urutkan ceritanya!',debug:'Tukar gambar yang terbalik.'})[m.type]||m.brief;}
+
+function visualClue(r){
+ const icon=v=>r.field==='o'?`<span class="clue-object">${theme().objects[v].icon}</span>`:r.field==='c'?`<span class="clue-swatch" style="background:${E.colors[v].hex}">${E.colors[v].mark}</span>`:r.field==='big'?`<span class="clue-size ${v?'large':'little'}">🐾</span><small>${v?'Besar':'Kecil'}</small>`:`<span class="clue-object">${v?'★':'☆'}</span><small>${v?'Berbintang':'Tanpa bintang'}</small>`;
+ return `<div class="clue-picture" role="img" aria-label="${escapeHTML(ruleText(r))}">${r.op==='ne'?'<b class="clue-not">BUKAN</b>':''}${r.op==='in'?r.value.map(icon).join('<small>atau</small>'):icon(r.value)}</div>`;
+}

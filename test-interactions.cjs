@@ -4,7 +4,7 @@ const el=()=>({open:false,showModal(){this.open=true;},close(){this.open=false;}
 const elements=new Map();
 const document={body:{dataset:{},style:{setProperty(){},removeProperty(){}}},querySelector(s){if(!elements.has(s))elements.set(s,el());return elements.get(s)},querySelectorAll:()=>[],addEventListener(k,f){(listeners[k]??=[]).push(f)}};
 const ctx=vm.createContext({document,window:{addEventListener(){},scrollTo(){}},localStorage:{getItem(){},setItem(){}},structuredClone,console,setTimeout,clearTimeout,requestAnimationFrame:()=>1,cancelAnimationFrame(){},Date});
-for(const file of ['engine.js','interactions.js','playful.js','voice.js','world-themes.js','motion.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),ctx);
+for(const file of ['engine.js','lessons.js','journey.js','interactions.js','playful.js','voice.js','world-themes.js','motion.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),ctx);
 const run=s=>vm.runInContext(s,ctx),open=id=>run(`dialog.close();openMission(${id})`);
 const drop=(kind,value,type,index)=>run(`applyDrop(${JSON.stringify(kind)},${JSON.stringify(String(value))},{dataset:{dropKind:${JSON.stringify(type)},value:${JSON.stringify(String(index))}${type==='program'&&index!==undefined?',index:'+JSON.stringify(String(index)):''}}})`);
 for(let level=0;level<5;level++)for(let type=0;type<10;type++)open(level*200+type);
@@ -43,7 +43,24 @@ open(4);run('state.answer=state.answer.map(()=>0)');assert.match(run('diagnoseAt
 open(7);run("state.program=[{type:'0'}];playfulAction('audition','1')");assert.equal(run('JSON.stringify(state.program)'), '[{"type":"0"}]');
 console.log('PASS: contextual hints for 1,000 missions, bounded hint stages, no answer mutation, too much/too little packing, counter reset, reversible detective elimination, rule mismatch, grid duplicates, and independent instrument preview.');
 open(609);run('state.answer[0]=0;state.answer[1]=1');run("playfulAction('countDots','0');playfulAction('countDots','1')");assert.equal(run('state.countBag'),1);assert.equal(run('state.dotCount'),1);assert.match(elements.get('#countingDots').textContent,/Tas 2:/);
-for(let world=0;world<20;world++){run(`chapter(${world})`);assert.equal(document.body.dataset.world,run(`E.themes[${world}].slug`));run('home()');assert.equal(document.body.dataset.world,undefined);}
+for(let world=0;world<20;world++){open(world*10+1);assert.equal(document.body.dataset.world,run(`E.themes[${world}].slug`));run('home()');assert.equal(document.body.dataset.world,undefined);}
+// Each game has an independent, ordered path; old saved IDs stay intact.
+run('progress={done:[],last:6}');
+for(const type of run('E.types.map(t=>t.id)')){
+ const ids=Array.from(run(`pathIds('${type}')`));assert.equal(run(`unlocked(${ids[0]})`),true);assert.equal(run(`unlocked(${ids[1]})`),false);
+ open(ids[0]);run('win()');assert.equal(run(`unlocked(${ids[1]})`),true);assert.match(elements.get('#dialog').innerHTML,new RegExp(`data-value="${ids[1]}"`));const count=run('progress.done.length');run('win()');assert.equal(run('progress.done.length'),count);
+ assert(ids.every(id=>run(`E.make(${id}).type`)==type));assert(ids.every((id,i)=>!i||run(`E.make(${id}).level`)>=run(`E.make(${ids[i-1]}).level`)));
+}
+run('progress={done:[6,206,1000],last:1000}');assert.equal(run('cleanProgress(progress).done.length'),3);assert.equal(run('nextInPath("route")'),16);assert.equal(run('unlocked(26)'),false);
+for(let id=1000;id<1045;id++){
+ open(id);assert.equal(run('E.validate(m,state.answer)'),false);run('hint()');run('state.answer=E.solution(m)');assert.equal(run('E.validate(m,state.answer)'),true);
+}
+open(1015);const storyBefore=run('JSON.stringify(state.answer)');assert(drop('story',0,'story',1));assert.notEqual(run('JSON.stringify(state.answer)'),storyBefore);run("action('reset')");assert.equal(run('JSON.stringify(state.answer)'),storyBefore);
+console.log('PASS: 13 independent paths, sequential unlocks, same-game continuation, replay deduplication, saved progress migration, 45 new solvable lessons, story drag and reset.');
+
+// Single-question flow: incorrect choices stay put; correct choices advance once.
+open(1003);assert.equal(run('state.question||0'),0);run("action('cause','0:'+m.questions[0].choices.findIndex(c=>!c.correct))");assert.equal(run('state.question||0'),0);assert.equal(elements.get('#dialog').open,true);run("playfulAction('tryAgain');action('cause','0:'+m.questions[0].choices.findIndex(c=>c.correct))");assert.equal(run('state.question'),1);assert.equal(elements.get('#check').hidden,true);run("action('cause','1:'+m.questions[1].choices.findIndex(c=>c.correct))");assert(run('progress.done.includes(1003)'));run("action('reset')");assert.equal(run('state.question||0'),0);
+console.log('PASS: immediate visual answers, one question at a time, retry preservation, multi-question completion and reset.');
 ctx.setTimeout=f=>{f();return 0;};
 (async()=>{
   open(6);run("state.program=[{type:'L'}]");await run('check()');assert.match(elements.get('#status').textContent,/Belum pas/);assert.equal(run('state.busy'),false);assert.match(elements.get('#dialog').innerHTML,/Coba lagi/);assert.equal(elements.get('#dialog').open,true);

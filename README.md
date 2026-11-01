@@ -68,6 +68,7 @@ node test-interactions.cjs
 node test-voice.cjs
 node test-themes.cjs
 node test-motion.cjs
+node test-variety.cjs
 python3 scripts/build-offline.py
 ```
 
@@ -118,3 +119,19 @@ Tes memeriksa cakupan 20 dunia, ilustrasi berbeda, pergantian/pembersihan tema, 
 Potongan puzzle dan kartu perintah bergeser dari posisi sebelumnya. Bimo melangkah antarpetak dengan lengkungan kecil dan pendaratan lembut. Kartu mengikuti titik pegangan saat diseret, sedikit miring mengikuti arah tangan, lalu masuk ke tujuan; kartu yang dilepas di luar sasaran kembali ke asal. Membuka kartu memori tidak mengulang animasi kartu lain.
 
 `dist/motion.js` mengelola transisi visual tanpa menunda perubahan jawaban. Gerakan yang sedang berjalan dibersihkan saat mengganti misi, mengulang permainan, atau mengaktifkan reduced motion. Versi standalone dan ZIP menyertakan modul ini.
+
+## Menu permainan dan jalur level
+
+Menu utama berisi 13 kartu permainan besar dengan progres bintang masing-masing. Setiap pilihan membuka hanya level permainan itu. Sepuluh permainan awal memiliki 100 level (20 tema per tingkat); tiga tambahan memiliki masing-masing 15 level: Sebab Akibat, Urutan Cerita, dan Detektif Kode. Total 1.045 misi.
+
+Level dibuka berurutan setelah berhasil; tombol lanjut tetap berada di jenis yang sama. Level selesai bisa diulang tanpa menambah bintang ganda. ID 1.000 misi lama tetap sama dan cadangan versi 3 tetap bisa diimpor. Progres lama yang melompati level tetap tersimpan dan bisa diulang; isi level yang terlewati untuk melanjutkan jalur. `journey.js` mengatur navigasi dan pembukaan level, `lessons.js` berisi permainan baru. Urutan Cerita dan Detektif Kode mendukung seret atau ketuk dua kartu untuk bertukar tempat.
+
+## UI ringkas
+
+Sidebar desktop berisi identitas Bimo, total bintang, dan navigasi; di ponsel berubah menjadi bilah atas. Soal menonjolkan gambar dan instruksi satu baris, dengan cara main serta panduan pendamping dilipat. Sebab Akibat menampilkan satu pertanyaan sekaligus dan langsung memeriksa pilihan; jawaban keliru tetap mempertahankan pertanyaan. Animasi mengambang, pantulan tombol, dan perayaan mengikuti prefers-reduced-motion.
+
+## Variasi tantangan dan UI seluruh permainan
+
+Ketiga belas permainan memakai area bermain ringkas, kartu besar, panel putih, tombol timbul, dan bantuan terlipat. Petunjuk detektif serta urutan mesin memakai simbol visual.
+
+Generator memeriksa isi tantangan tanpa memakai ID, nama tema, atau label tingkat sebagai pembeda. Kandidat yang identik dibuat ulang dengan seed deterministik; level tetap sama saat dimainkan ulang. Irama awal memakai tiga bunyi dari empat instrumen, dan posisi awal rute dapat bervariasi. Cerita baru mencakup 30 cerita berbeda, sedangkan Sebab Akibat memakai 15 situasi dengan rangkaian soal bertambah. Nomor misi serta bintang lama tetap dipertahankan; beberapa isi level yang sebelumnya duplikat diperbarui. `node test-variety.cjs` memeriksa keunikan 1.045 tantangan, solusi, kestabilan saat membuka level dalam urutan berbeda, serta isolasi cache.

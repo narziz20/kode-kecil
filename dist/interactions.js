@@ -2,6 +2,9 @@
 // Pointer events support mouse, pen and touch; native buttons remain usable by keyboard.
 const playGuides = {
   memory: ['Cari dua kartu kembar!', '👆 Buka kartu', '👀 Ingat gambar + warna', '🐾 Temukan kembarnya'],
+  cause:['Apa yang terjadi berikutnya?', '👀 Lihat kejadian', '🤔 Pikirkan akibatnya', '👆 Pilih gambar'],
+  sequence:['Susun ceritanya!', '👀 Lihat semua gambar', '✋ Tukar tempat', '✅ Cek urutannya'],
+  debug:['Perbaiki langkah Bimo!', '👀 Cari yang tertukar', '✋ Tukar gambar', '✅ Cek lagi'],
   sort: ['Antar kartu ke rumahnya!', '👀 Lihat warna & gambar rumah', '✋ Seret satu kartu', '🏡 Lepas di rumah yang cocok'],
   pattern: ['Ayo, lengkapi keretanya!', '👀 Lihat urutan gambar', '✋ Seret gambar pilihan', '🚂 Isi gerbong bertanda ?'],
   mosaic: ['Satukan gambar yang terpotong!', '👀 Lihat gambar contoh', '✋ Seret satu potongan', '🧩 Lepas untuk bertukar tempat'],
@@ -14,7 +17,7 @@ const playGuides = {
 };
 function childGuide() {
   const [title, ...steps] = playGuides[m.type];
-  return `<section class="bimo-guide" aria-label="Cara bermain"><button id="bimoBuddy" class="bimo-buddy" data-action="buddy" aria-label="Tos dengan Bimo"><span class="buddy-antenna" aria-hidden="true">✦</span><span class="buddy-face" aria-hidden="true"><i></i><i></i><span class="buddy-mouth"></span></span><small>Tos! 🖐️</small></button><div><b>${title}</b><ol>${steps.map(s=>`<li>${s}</li>`).join('')}</ol><small>${['memory','detective'].includes(m.type)?'Pelan-pelan saja. Aku menemanimu!':'Pegang kartu, geser, lalu lepaskan. Ketuk kartu dan tujuannya juga boleh.'}</small><details class="how-demo"><summary>👀 Tunjukkan caranya</summary><div class="demo-stage ${['memory','detective'].includes(m.type)?'demo-tap':''}" aria-hidden="true"><span class="demo-hand">☝️</span><span class="demo-card">${({memory:'🐾',detective:'🔎',route:'↑',music:'🥁',factory:'🎨',packing:'🍎',sort:'🦁',matrix:'🌼',pattern:'🐾',mosaic:'🧩'})[m.type]}</span><span class="demo-home">${m.type==='sort'?'🏡':m.type==='packing'?'🎒':'⬚'}</span></div><p>${['memory','detective'].includes(m.type)?'Ketuk kartu. Lihat gambarnya baik-baik.':'Pegang satu kartu → geser ke tempatnya → lepaskan.'} Coba sendiri, yuk!</p></details></div></section>`;
+  return `<section class="bimo-guide" aria-label="Cara bermain"><button id="bimoBuddy" class="bimo-buddy" data-action="buddy" aria-label="Tos dengan Bimo"><span class="buddy-antenna" aria-hidden="true">✦</span><span class="buddy-face" aria-hidden="true"><i></i><i></i><span class="buddy-mouth"></span></span><small>Tos! 🖐️</small></button><div><b>${title}</b><ol>${steps.map(s=>`<li>${s}</li>`).join('')}</ol><small>${['memory','detective','cause'].includes(m.type)?'Pelan-pelan saja. Aku menemanimu!':'Pegang kartu, geser, lalu lepaskan. Ketuk kartu dan tujuannya juga boleh.'}</small><details class="how-demo"><summary>👀 Tunjukkan caranya</summary><div class="demo-stage ${['memory','detective','cause'].includes(m.type)?'demo-tap':''}" aria-hidden="true"><span class="demo-hand">☝️</span><span class="demo-card">${({cause:'☂️',sequence:'🌱',debug:'🔧',memory:'🐾',detective:'🔎',route:'↑',music:'🥁',factory:'🎨',packing:'🍎',sort:'🦁',matrix:'🌼',pattern:'🐾',mosaic:'🧩'})[m.type]}</span><span class="demo-home">${m.type==='sort'?'🏡':m.type==='packing'?'🎒':'⬚'}</span></div><p>${['memory','detective','cause'].includes(m.type)?'Ketuk kartu. Lihat gambarnya baik-baik.':'Pegang satu kartu → geser ke tempatnya → lepaskan.'} Coba sendiri, yuk!</p></details></div></section>`;
 }
 function preparePlay() {
   const game = $('#game');
@@ -27,6 +30,7 @@ function preparePlay() {
   if (m.type === 'packing') { mark('[data-action="provision"]','dragKind','packing'); mark('[data-action="bag"]','dropKind','packing'); }
   if (m.type === 'pattern') { mark('[data-action="pattern"]','dragKind','pattern'); mark('[data-action="select"]','dropKind','pattern'); }
   if (m.type === 'matrix') { mark('.symbol-button','dragKind','matrix'); mark('[data-action="select"]','dropKind','matrix'); }
+  if (isStory()) { mark('[data-action="story"]','dragKind','story'); mark('[data-action="story"]','dropKind','story'); }
   if (m.type === 'mosaic') { mark('[data-action="tile"]','dragKind','mosaic'); mark('[data-action="tile"]','dropKind','mosaic'); }
   mark('[data-action="add"]','dragKind','command');
   mark('[data-action="remove"]','dragKind','reorder');
@@ -58,7 +62,7 @@ function applyDrop(kind, value, target, releaseRect=null) {
   if (kind==='sort'||kind==='packing') state.answer[from]=to;
   else if (kind==='pattern') state.answer[to]=clone(m.choices[from]);
   else if (kind==='matrix') { if(m.clues[to]>=0)return false; state.answer[to]=from; }
-  else if (kind==='mosaic') [state.answer[from],state.answer[to]]=[state.answer[to],state.answer[from]];
+  else if (kind==='mosaic'||kind==='story') [state.answer[from],state.answer[to]]=[state.answer[to],state.answer[from]];
   else {
     let index=target.dataset.index===undefined?state.program.length:+target.dataset.index;
     if(kind==='command') { if(state.program.length>=30){setStatus('Rencananya penuh. Hapus satu kartu dulu, ya.');return false;} state.program.splice(index,0,{type:value}); }
@@ -66,9 +70,9 @@ function applyDrop(kind, value, target, releaseRect=null) {
     arrivalKey=GameMotion.key(state.program[index]);state.active=-1;
   }
   state.selection=null;
-  if(releaseRect){arrivalKey=arrivalKey||({sort:'placed-sort-'+from,packing:'placed-packing-'+from,pattern:'pattern-'+to,matrix:'matrix-'+to,mosaic:'tile-'+state.answer[to]})[kind];GameMotion.seed(arrivalKey,releaseRect);}
+  if(releaseRect){arrivalKey=arrivalKey||({sort:'placed-sort-'+from,packing:'placed-packing-'+from,pattern:'pattern-'+to,matrix:'matrix-'+to,mosaic:'tile-'+state.answer[to],story:'story-'+state.answer[to]})[kind];GameMotion.seed(arrivalKey,releaseRect);}
   state.dotCount=0;renderGame();
-  setStatus(({sort:'Kartu sudah sampai! Mau pindahkan? Seret lagi, ya. 🏡',packing:'Bekal masuk! Yuk, hitung titik di tas. 🎒',pattern:'Gerbong terisi! Coba baca urutannya. 🚂',matrix:'Gambar tertanam! Lihat baris dan kolomnya. 🌱',mosaic:'Tukar tempat! Makin mirip contoh belum? 🧩',command:'Kartu masuk rencana! Tambah lagi atau tekan Jalankan. 🤖',reorder:'Urutannya berubah! Yuk, coba rencana barumu. 🤖'})[kind]);
+  setStatus(({sort:'Kartu sudah sampai! Mau pindahkan? Seret lagi, ya. 🏡',packing:'Bekal masuk! Yuk, hitung titik di tas. 🎒',pattern:'Gerbong terisi! Coba baca urutannya. 🚂',matrix:'Gambar tertanam! Lihat baris dan kolomnya. 🌱',mosaic:'Tukar tempat! Makin mirip contoh belum? 🧩',command:'Kartu masuk rencana! Tambah lagi atau tekan Jalankan. 🤖',story:'Gambarnya sudah bertukar. Ceritanya masuk akal belum? 🌱',reorder:'Urutannya berubah! Yuk, coba rencana barumu. 🤖'})[kind]);
   const targets={sort:`[data-action="bin"][data-value="${to}"]`,packing:`[data-action="bag"][data-value="${to}"]`,pattern:`[data-action="select"][data-value="${to}"]`,matrix:`.matrix-cell[data-value="${to}"]`,mosaic:`[data-action="tile"][data-value="${to}"]`,command:'.program',reorder:'.program'};
   if(['sort','packing'].includes(kind))animatePlay(targets[kind]);else reactBimo('happy');
   return true;

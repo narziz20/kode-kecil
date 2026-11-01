@@ -1,6 +1,9 @@
 'use strict';
 // Hints describe the child's current attempt, then ask one question at a time.
 const thinkingQuestions = {
+  cause:['Apa yang ingin kita bantu pada kejadian ini?', 'Bayangkan kamu memakai pilihanmu. Apa yang akan terjadi?', 'Bandingkan dua pilihan. Mana yang membantu menyelesaikan masalahnya?'],
+  sequence:['Gambar mana yang menunjukkan awal cerita?', 'Lihat dua gambar bersebelahan. Bisa terjadi dalam urutan itu?', 'Ceritakan dari kiri ke kanan. Ada langkah yang terlalu cepat muncul?'],
+  debug:['Cari dua langkah yang terasa terbalik.', 'Apa yang perlu selesai sebelum langkah ini bisa dilakukan?', 'Coba peragakan urutannya. Di bagian mana kamu perlu berhenti?'],
   memory:['Gambarnya sama. Warna bingkainya juga sama, belum?', 'Ingat satu kartu dulu. Di mana kamu pernah melihat kembarnya?', 'Sebut gambar dan warnanya pelan-pelan saat kartu terbuka.'],
   sort:['Lihat rumahnya. Warna atau gambar apa yang kamu lihat?', 'Coba lihat satu kartu dan rumahnya. Warna atau gambarnya sudah sama?', 'Kalau ada DAN, dua-duanya harus cocok. Kalau ATAU, cukup salah satu.'],
   pattern:['Coba sebut gambar dari kiri. Bagian mana yang muncul lagi?', 'Lihat dua kelompok yang sama. Setelah kelompok itu, apa yang datang?', 'Periksa gambar dan warna secara terpisah. Keduanya mengikuti pola apa?'],
@@ -39,7 +42,7 @@ function showThinking(isRetry=false, override='') {
   const n=state.clueStep||0;
   state.clueStep=Math.min(n+1,2);
   const diagnosis=message?{text:message,focus:['factory','route','music'].includes(m.type)?'.program':''}:diagnoseAttempt();
-  const question=m.type==='sort'&&!m.ruleText&&n>=2?'Pilih satu kartu. Ciri apa yang sama dengan nama rumahnya?':thinkingQuestions[m.type][Math.min(n,2)];
+  const question=m.type==='sort'&&!m.ruleText&&n>=2?'Pilih satu kartu. Warna atau gambar apa yang sama dengan rumahnya?':(thinkingQuestions[m.type]||[lessonClue(),lessonClue(),lessonClue()])[Math.min(n,2)];
   setStatus(`${popup?'Belum pas, tidak apa-apa. ':''}${diagnosis.text}`,'thinking',false);
   const buttons=`<div class="coach-actions"><button class="secondary" data-action="hint">💡 ${n<2?'Bantu sedikit lagi':'Baca petunjuk lagi'}</button><button class="secondary" data-action="coachListen">🔊 Dengarkan</button></div>`;
   if(popup){
@@ -66,10 +69,10 @@ function animatePlay(selector,style='pop') {
   reactBimo('happy');
 }
 function playfulTools() {
-  if(m.type==='detective')return `<div class="play-tools">${btn('crossMode','',state.crossMode?'🔎 Pilih jawaban':'✏️ Coret pilihan','secondary', 'Ganti mode mencoret')}<span>${state.crossMode?'Ketuk gambar untuk mencoret. Ketuk lagi untuk mengembalikan.':'Tidak cocok? Coret dulu. Kamu boleh berubah pikiran.'}</span></div>`;
-  if(m.type==='packing')return `<div class="play-tools">${m.targets.map((_,b)=>btn('countDots',b,`👆 Hitung tas ${b+1}`,'secondary')).join('')}<span id="countingDots" role="status">${state.dotCount?`Tas ${(state.countBag||0)+1}: titik ke-${state.dotCount} · ketuk lagi untuk lanjut`:'Satu ketukan, satu titik. Yuk, hitung bersama!'}</span></div>`;
-  if(m.type==='mosaic')return `<div class="play-tools">${btn('peek','','🔍 Lihat contoh lebih dekat','secondary')}</div>`;
-  if(m.type==='music')return `<div class="sound-playground"><b>🎵 Coba bunyinya dulu!</b><p>Ketuk alat musik. Rencanamu tetap seperti tadi.</p><div>${['0','1','2','3'].map(v=>btn('audition',v,`${noteIcon(v)} <small>${commandName(v)}</small>`,'sound-pad')).join('')}</div></div>`;
+  if(m.type==='detective')return `<div class="play-tools">${btn('crossMode','',state.crossMode?'🔎 Pilih jawaban':'✏️ Coret pilihan','secondary', 'Ganti mode mencoret')}<span>${state.crossMode?'Ketuk untuk mencoret.':''}</span></div>`;
+  if(m.type==='packing')return `<div class="play-tools">${m.targets.map((_,b)=>btn('countDots',b,`👆 Hitung tas ${b+1}`,'secondary')).join('')}<span id="countingDots" role="status">${state.dotCount?`Tas ${(state.countBag||0)+1}: titik ke-${state.dotCount} · ketuk lagi untuk lanjut`:''}</span></div>`;
+  if(m.type==='mosaic')return `<div class="play-tools">${btn('peek','','🔍 Perbesar contoh','secondary')}</div>`;
+  if(m.type==='music')return `<div class="sound-playground"><b>🎵 Coba bunyi</b><div>${['0','1','2','3'].map(v=>btn('audition',v,`${noteIcon(v)} <small>${commandName(v)}</small>`,'sound-pad')).join('')}</div></div>`;
   return '';
 }
 function decoratePlay() {

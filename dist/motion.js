@@ -37,6 +37,7 @@ const GameMotion=(()=>{
   }
   function bind(game){
     const mark=(selector,fn)=>game.querySelectorAll(selector).forEach((el,i)=>{el.dataset.motion=fn(el,i);});
+    mark('.story-tile',(el,i)=>'story-'+state.answer[i]);
     mark('.puzzle-tile',(el,i)=>'tile-'+state.answer[i]);
     mark('.token',(el,i)=>key(state.program[i]));
     mark('.route-avatar',()=> 'bimo');
