@@ -40,6 +40,7 @@ const GameMotion=(()=>{
     mark('.story-tile',(el,i)=>'story-'+state.answer[i]);
     mark('.puzzle-tile',(el,i)=>'tile-'+state.answer[i]);
     mark('.token',(el,i)=>key(state.program[i]));
+    mark('.bag-icon',(el,i)=>{el.dataset.content=JSON.stringify(state.answer.map((v,k)=>v===i?k:-1));return 'bag-icon-'+i;});
     mark('.route-avatar',()=> 'bimo');
     mark('.memory-tile',(el,i)=>{el.dataset.face=state.matched[i]?'matched':state.flipped.includes(i)?'front':'back';return 'memory-'+i;});
     mark('.machine-output .picture-card',(el,i)=>{el.dataset.content=JSON.stringify(state.outputs[i]);return 'output-'+i;});

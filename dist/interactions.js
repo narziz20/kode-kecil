@@ -9,8 +9,8 @@ const playGuides = {
   pattern: ['Ayo, lengkapi keretanya!', '👀 Lihat urutan gambar', '✋ Seret gambar pilihan', '🚂 Isi gerbong bertanda ?'],
   mosaic: ['Satukan gambar yang terpotong!', '👀 Lihat gambar contoh', '✋ Seret satu potongan', '🧩 Lepas untuk bertukar tempat'],
   matrix: ['Bantu isi kebun ini!', '👀 Cari gambar yang belum ada', '✋ Seret gambar ke kotak', '🌱 Tiap baris dan kolom beda'],
-  factory: ['Bikin gambar seperti contoh!', '👀 Lihat gambar tujuan', '✋ Seret mesin ke rencana', '▶ Jalankan dan lihat hasilnya'],
-  route: ['Antar Bimo ke bendera!', '👀 Cari jalan ke 🚩', '✋ Susun kartu panah', '▶ Ayo, Bimo jalan!'],
+  factory: ['Samakan dengan tujuan!', '👀 Lihat warna tujuan', '🪄 Pilih atau seret sihir ke kotak', '▶ Tekan Bim Salabim!'],
+  route: ['Antar Bimo ke baterai!', '👀 Cari jalan ke 🔋', '✋ Susun kartu panah', '▶ Ayo, Bimo jalan!'],
   music: ['Tirukan irama lucunya!', '👂 Dengarkan contoh', '✋ Susun kartu bunyi', '▶ Mainkan iramamu'],
   detective: ['Siapa yang kita cari?', '🔎 Baca satu petunjuk', '👀 Cari gambar yang cocok', '👆 Ketuk pilihanmu'],
   packing: ['Siapkan bekal petualangan!', '👀 Hitung titik di bekal', '✋ Seret bekal ke tas', '🎒 Cocokkan jumlah titiknya']
@@ -37,7 +37,7 @@ function preparePlay() {
   mark('.program, .token','dropKind','program');
   game.querySelectorAll('.token').forEach((el,i) => { el.dataset.index=i; el.setAttribute('aria-label', `Kartu ${i+1}: ${codeLabel(state.program[i])}. Enter untuk menghapus. Alt + panah kiri atau kanan untuk memindahkan.`); });
   // Show the actual contents of houses and bags, not just an abstract count.
-  if (m.type === 'sort' || m.type === 'packing') game.querySelectorAll('[data-drop-kind]').forEach(el=>{
+  if (m.type === 'sort') game.querySelectorAll('[data-drop-kind]').forEach(el=>{
     const bin=+el.dataset.value;
     const contents=m.cards.map((c,i)=>state.answer[i]===bin?`<span data-card-index="${i}">${m.type==='sort'?card(c,{small:true}):theme().objects[c.o].icon}</span>`:'').join('');
     el.insertAdjacentHTML('beforeend',`<span class="placed-items" aria-hidden="true">${contents||'<span class="drop-prompt">↓ Taruh di sini</span>'}</span>`);
