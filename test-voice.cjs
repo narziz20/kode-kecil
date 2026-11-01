@@ -1,0 +1,23 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+let voices=[],spoken=[],saved=new Map(),timers=new Map(),timerId=0,talking=false;
+const buddy={classList:{toggle(k,v){talking=v;}}};
+const speech={getVoices:()=>voices,speak(u){spoken.push(u);},cancel(){},addEventListener(){}};
+const ctx=vm.createContext({window:{speechSynthesis:speech},document:{querySelector:s=>s==='#bimoBuddy'?buddy:null},localStorage:{getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)},SpeechSynthesisUtterance:class{constructor(text){this.text=text;}},setTimeout:f=>{timers.set(++timerId,f);return timerId;},clearTimeout:id=>timers.delete(id)});
+vm.runInContext(fs.readFileSync('dist/voice.js','utf8'),ctx);const run=s=>vm.runInContext(s,ctx);
+voices=[{voiceURI:'en',lang:'en-US',name:'Natural English'},{voiceURI:'id-basic',lang:'id-ID',name:'Indonesia',localService:true},{voiceURI:'id-natural',lang:'id-ID',name:'Indonesia Natural',localService:true}];
+assert.equal(run('BimoVoice.chooseVoice().voiceURI'),'id-natural');
+run("BimoVoice.configure('id-basic','cheerful')");assert.equal(run('BimoVoice.chooseVoice().voiceURI'),'id-basic');
+assert.equal(JSON.parse(saved.get('kode-kecil-voice-v1')).voiceURI,'id-basic');
+assert.equal(run("BimoVoice.clean('🤖 Ambil ⭐ lalu ke 🚩. Ulang 2×. ↔ Jangan kembar. 🔒')"),'Ambil bintang lalu ke bendera. Ulang 2 kali. ke samping Jangan kembar. gembok');
+run("BimoVoice.say('Hai! Mau coba? Yuk, mulai.')");assert.equal(spoken.length,1);assert.equal(spoken[0].text,'Hai!');assert.equal(spoken[0].lang,'id-ID');assert.equal(spoken[0].pitch,1.16);
+spoken[0].onstart();assert(talking);spoken[0].onend();assert(!talking);
+const firstTimer=[...timers.values()][0];timers.clear();firstTimer();assert.equal(spoken[1].text,'Mau coba?');assert.equal(spoken[1].rate,.94);
+// Cancelled callbacks and scheduled sentences may never resume after navigating/muting.
+const stale=spoken[1];run('BimoVoice.stop()');stale.onend();assert.equal(timers.size,0);stale.onstart();assert(!talking);
+run("BimoVoice.say('Lama. Lanjut.')");const old=spoken.at(-1);old.onend();const queued=[...timers.values()][0];run("BimoVoice.say('Baru!')");const n=spoken.length;queued();assert.equal(spoken.length,n);assert.equal(spoken.at(-1).text,'Baru!');
+run("BimoVoice.configure('', 'gentle');BimoVoice.say('Pelan, ya.')");assert.equal(spoken.at(-1).rate,.88);assert.equal(spoken.at(-1).pitch,1);
+voices=[{voiceURI:'en',lang:'en-US',name:'English Natural'}];assert.equal(run('BimoVoice.chooseVoice()'),null);run("BimoVoice.say('Halo!')");assert.equal(spoken.at(-1).lang,'id-ID');assert.equal(spoken.at(-1).voice,undefined);
+spoken.at(-1).onerror({error:'network'});assert(!talking);assert.equal(timers.size,0);
+assert.equal(run("BimoVoice.say('🤖')"),false);
+const unsupported=vm.createContext({window:{},document:{querySelector(){return null;}},localStorage:{getItem(){return '{bad json';}},clearTimeout(){}});vm.runInContext(fs.readFileSync('dist/voice.js','utf8'),unsupported);assert.equal(vm.runInContext("BimoVoice.say('Halo')",unsupported),false);
+console.log('PASS: Indonesian voice selection and preference, speech cleanup, sentence pacing, expression, interruption, stale callbacks, fallback, error cleanup, unsupported browser, and corrupt preferences.');

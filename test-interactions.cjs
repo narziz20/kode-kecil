@@ -1,11 +1,11 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const listeners={};
-const el=()=>({innerHTML:'',textContent:'',disabled:false,dataset:{},classList:{add(){},remove(){},toggle(){}},querySelectorAll:()=>[],insertAdjacentHTML(){},setAttribute(){},scrollIntoView(){}});
+const el=()=>({open:false,showModal(){this.open=true;},close(){this.open=false;},focus(){},removeAttribute(){},innerHTML:'',textContent:'',disabled:false,dataset:{},classList:{add(){},remove(){},toggle(){}},querySelectorAll:()=>[],insertAdjacentHTML(){},addEventListener(){},setAttribute(){},scrollIntoView(){}});
 const elements=new Map();
-const document={querySelector(s){if(!elements.has(s))elements.set(s,el());return elements.get(s)},querySelectorAll:()=>[],addEventListener(k,f){(listeners[k]??=[]).push(f)}};
+const document={body:{dataset:{},style:{setProperty(){},removeProperty(){}}},querySelector(s){if(!elements.has(s))elements.set(s,el());return elements.get(s)},querySelectorAll:()=>[],addEventListener(k,f){(listeners[k]??=[]).push(f)}};
 const ctx=vm.createContext({document,window:{addEventListener(){},scrollTo(){}},localStorage:{getItem(){},setItem(){}},structuredClone,console,setTimeout,clearTimeout,requestAnimationFrame:()=>1,cancelAnimationFrame(){},Date});
-for(const file of ['engine.js','interactions.js','playful.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),ctx);
-const run=s=>vm.runInContext(s,ctx),open=id=>run(`openMission(${id})`);
+for(const file of ['engine.js','interactions.js','playful.js','voice.js','world-themes.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),ctx);
+const run=s=>vm.runInContext(s,ctx),open=id=>run(`dialog.close();openMission(${id})`);
 const drop=(kind,value,type,index)=>run(`applyDrop(${JSON.stringify(kind)},${JSON.stringify(String(value))},{dataset:{dropKind:${JSON.stringify(type)},value:${JSON.stringify(String(index))}${type==='program'&&index!==undefined?',index:'+JSON.stringify(String(index)):''}}})`);
 for(let level=0;level<5;level++)for(let type=0;type<10;type++)open(level*200+type);
 open(1);assert(drop('sort',0,'sort',1));assert.equal(run('state.answer[0]'),1);assert(drop('sort',0,'sort',0));assert.equal(run('state.answer[0]'),0);
@@ -22,7 +22,7 @@ run("dragging={source:{classList:{remove(){}}},ghost:{remove(){}},frame:1};cance
 console.log('PASS: 50 mission screens; all drop types; reassignment; invalid targets; fixed clues; command insertion/reordering; nested blocks; busy/length guards; reset; cancellation; tap fallback.');
 // Hints must work for every generated activity and never silently fill in answers.
 for(let id=0;id<1000;id++){
-  open(id);
+  open(id);assert.equal(document.body.dataset.world,run('theme().slug'));
   const before=run('JSON.stringify({answer:state.answer,program:state.program})');
   const detail=run('diagnoseAttempt()');assert.equal(typeof detail.text,'string');assert(detail.text.length>0);
   run('showThinking(true);hint();hint();hint()');
@@ -43,11 +43,15 @@ open(4);run('state.answer=state.answer.map(()=>0)');assert.match(run('diagnoseAt
 open(7);run("state.program=[{type:'0'}];playfulAction('audition','1')");assert.equal(run('JSON.stringify(state.program)'), '[{"type":"0"}]');
 console.log('PASS: contextual hints for 1,000 missions, bounded hint stages, no answer mutation, too much/too little packing, counter reset, reversible detective elimination, rule mismatch, grid duplicates, and independent instrument preview.');
 open(609);run('state.answer[0]=0;state.answer[1]=1');run("playfulAction('countDots','0');playfulAction('countDots','1')");assert.equal(run('state.countBag'),1);assert.equal(run('state.dotCount'),1);assert.match(elements.get('#countingDots').textContent,/Tas 2:/);
+for(let world=0;world<20;world++){run(`chapter(${world})`);assert.equal(document.body.dataset.world,run(`E.themes[${world}].slug`));run('home()');assert.equal(document.body.dataset.world,undefined);}
 ctx.setTimeout=f=>{f();return 0;};
 (async()=>{
-  open(6);run("state.program=[{type:'L'}]");await run('check()');assert.match(elements.get('#status').textContent,/Belum pas/);assert.equal(run('state.busy'),false);assert.match(elements.get('#coach').innerHTML,/Aku mau coba/);
+  open(6);run("state.program=[{type:'L'}]");await run('check()');assert.match(elements.get('#status').textContent,/Belum pas/);assert.equal(run('state.busy'),false);assert.match(elements.get('#dialog').innerHTML,/Coba lagi/);assert.equal(elements.get('#dialog').open,true);
   open(7);run("state.program=[{type:String((+m.target[0]+1)%4)}]");await run('check()');assert.match(elements.get('#status').textContent,/bunyi nomor 1/);assert.equal(run('state.busy'),false);
   open(1);await run('check()');assert.match(elements.get('#status').textContent,/belum punya rumah/);
-  run("action('select','0');action('bin','0')");assert.equal(elements.get('#coach').innerHTML,'');
+  run("playfulAction('tryAgain');action('select','0');action('bin','0')");assert.equal(elements.get('#dialog').open,false);assert.equal(elements.get('#coach').innerHTML,'');
+  open(0);run('state.testOther=m.cards.findIndex(c=>c.pair!==m.cards[0].pair)');await run('memory(0)');await run('memory(state.testOther)');assert.equal(elements.get('#dialog').open,true);assert.equal(run('state.busy'),false);assert.equal(run('state.flipped.length'),0);
+  run('hint()');assert.equal(elements.get('#dialog').open,true);assert.match(elements.get('#dialog').innerHTML,/Coba pikirkan/);run("playfulAction('tryAgain')");assert.equal(elements.get('#dialog').open,false);
+  open(6);await run('check()');assert.equal(elements.get('#dialog').open,true);assert.match(elements.get('#dialog').innerHTML,/masih kosong/);run('hint()');assert.match(elements.get('#dialog').innerHTML,/masih kosong/);
   console.log('PASS: per-bag counting, blocked route and wrong music feedback after playback, unfinished sorting feedback, and clearing stale clues after edits.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

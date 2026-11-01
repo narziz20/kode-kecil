@@ -65,6 +65,8 @@ Tombol besar, petunjuk singkat, tanda bentuk pada warna, dan dukungan penguranga
 node test.cjs
 node test-classic.cjs
 node test-interactions.cjs
+node test-voice.cjs
+node test-themes.cjs
 python3 scripts/build-offline.py
 ```
 
@@ -87,3 +89,25 @@ Bimo dapat diajak tos, berkedip, dan bereaksi saat anak berpikir atau memindahka
 Saat jawaban belum pas, bantuan menjelaskan hal yang teramati dari percobaan anak (misalnya titik berlebih, gambar kembar pada kebun, petunjuk detektif yang belum cocok, atau langkah robot yang terhalang), lalu memberi satu pertanyaan. Tombol “Bantu sedikit lagi” membuka pertanyaan berikutnya, sampai tiga tahap; jawaban anak tidak diubah otomatis. Bagian terkait ditandai dengan garis putus-putus. Anak dapat mendengarkan petunjuk atau kembali mencoba.
 
 Variasi tambahan: mode coret pilihan detektif yang dapat dibatalkan, menghitung titik per tas dengan ketukan, mencoba bunyi alat musik tanpa menambah kode, dan memperbesar contoh puzzle. Tes memeriksa bantuan di semua 1.000 misi, tidak adanya perubahan jawaban oleh petunjuk, hitungan per tas, coretan yang dapat dibatalkan, serta bantuan setelah program berhenti. Alur bantuan salah pilih dan bertahap, mencoret, mencoba bunyi, serta memperbesar puzzle diperiksa di browser; tampilan Bimo dan panduan diperiksa pada lebar 390 piksel. Belum dilakukan uji pemahaman langsung bersama anak.
+
+## Suara Bimo
+
+Suara memakai gaya Ceria secara default: kalimat pendek, jeda antar kalimat, tempo lebih hidup, dan variasi nada ringan untuk pertanyaan/seruan. Emoji hias tidak dibacakan; simbol penting seperti bintang, bendera, arah, dan ulang tetap diucapkan. Mulut Bimo bergerak ketika browser mulai membacakan kalimat. Petunjuk tidak lagi memulai dua bacaan berturut-turut yang saling memotong.
+
+Di menu orang tua, bagian “Suara teman bermain” menyediakan pilihan suara Indonesia yang tersedia di perangkat, gaya Ceria/Lembut, contoh suara, dan tombol berhenti. Pilihan disimpan lokal. Suara berhenti ketika dimatikan, pindah aktivitas, atau menutup dialog. Suara berlabel Natural/Neural/Premium/Enhanced diprioritaskan jika tersedia; label ini hanya petunjuk pemilihan, bukan jaminan kualitas. Suara nonlokal mungkin membutuhkan internet.
+
+Ini tetap sintesis suara bawaan browser, bukan rekaman pengisi suara atau layanan TTS baru. Kualitas dan dukungan pengaturan nada berbeda antarperangkat. Tes `test-voice.cjs` memeriksa pemilihan bahasa, preferensi, pemenggalan kalimat, pembersihan simbol, jeda, pembatalan, dan kegagalan suara. UI pengaturan dan kondisi tidak tersedianya suara diperiksa di browser; browser pengujian tidak memiliki suara Indonesia sehingga kualitas audio belum dapat didengarkan di sana.
+
+## Popup saat jawaban belum tepat
+
+Pemeriksaan jawaban yang belum tepat membuka dialog dengan penjelasan, satu pertanyaan pemantik, bantuan lanjutan, tombol dengarkan, dan “Coba lagi”. Jawaban anak tetap tersimpan. Bantuan berikutnya tetap di dalam dialog; tombol coba lagi kembali ke bagian permainan yang perlu diperiksa. Dialog juga bisa ditutup dengan × atau Escape. Pada memori, dua kartu diperlihatkan sekitar satu detik sebelum popup muncul. Program kosong, jalur terhalang, dan syarat kartu khusus yang belum dipenuhi memakai popup yang sama. Petunjuk yang diminta sendiri di luar popup tetap tersedia di bawah permainan.
+
+Pengujian mencakup popup setelah pemeriksaan, bantuan lanjutan di dialog, kembali mencoba tanpa reset jawaban, kegagalan memori, program kosong, serta popup setelah program dijalankan. Alur buka–bantuan lanjutan–coba lagi diperiksa langsung di browser.
+
+## Tema dunia yang mengikuti pilihan
+
+Semua 20 dunia memakai palet dan ilustrasi lingkungan sendiri. Safari menampilkan gerbang kebun binatang, pagar, pohon, dan hewan; Laut Ajaib memakai lapisan biru laut, berkas cahaya, gelembung, ikan, dan karang. Dunia lain memiliki lingkungan yang sesuai: lembah purba, peternakan, planet, kota hewan, es kutub, kios buah, jalan kota, hutan, bunga, kota robot, panggung musik, pelangi, istana, dapur, lapangan, studio seni, dan pantai.
+
+Tema aktif saat membuka dunia maupun langsung membuka misi, bertahan ketika mencoba ulang/berpindah permainan dalam dunia itu, dan kembali netral saat membuka peta. `dist/world-themes.js` menyimpan palet dan ilustrasi SVG lokal. Ilustrasi tetap tersedia offline; tidak memuat gambar eksternal. Latar dekoratif tidak bisa diklik dan tidak dibacakan pembaca layar. Area soal memakai permukaan terang, warna kartu jawaban tetap sama, dan animasi mengikuti pengaturan reduced motion.
+
+Tes memeriksa cakupan 20 dunia, ilustrasi berbeda, pergantian/pembersihan tema, tema pada seluruh 1.000 misi, serta kontras teks putih tombol utama minimal 4,5:1. Tema safari dan laut serta popup pada layar 390 piksel diperiksa di browser.

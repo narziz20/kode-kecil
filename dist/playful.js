@@ -32,17 +32,28 @@ function diagnoseAttempt() {
 }
 function showThinking(isRetry=false, override='') {
   if(!m||state.busy)return;
+  const inPopup=dialog.open&&dialog.dataset.feedback==='true';
+  const popup=isRetry||inPopup;
+  if(isRetry)state.retryMessage=override;
+  const message=override||(inPopup?state.retryMessage:'');
   const n=state.clueStep||0;
   state.clueStep=Math.min(n+1,2);
-  const diagnosis=diagnoseAttempt();
+  const diagnosis=message?{text:message,focus:['factory','route','music'].includes(m.type)?'.program':''}:diagnoseAttempt();
   const question=m.type==='sort'&&!m.ruleText&&n>=2?'Pilih satu kartu. Ciri apa yang sama dengan nama rumahnya?':thinkingQuestions[m.type][Math.min(n,2)];
-  setStatus(`${isRetry?'Belum pas, tidak apa-apa. ':''}${override||diagnosis.text}`,'thinking');
-  const coach=$('#coach');
-  if(coach)coach.innerHTML=`<div class="thinking-card"><span aria-hidden="true">🌱</span><div><b>${isRetry?'Kita coba satu langkah lagi, yuk!':'Bimo punya pertanyaan'}</b><p>${escapeHTML(question)}</p><div class="coach-actions"><button class="secondary" data-action="hint">💡 ${n<2?'Bantu sedikit lagi':'Baca petunjuk lagi'}</button><button class="secondary" data-action="coachListen">🔊 Dengarkan</button><button class="secondary" data-action="tryAgain">✋ Aku mau coba</button></div></div></div>`;
-  state.coachSpeech=`${override||diagnosis.text} ${question}`;speak(state.coachSpeech);
+  setStatus(`${popup?'Belum pas, tidak apa-apa. ':''}${diagnosis.text}`,'thinking',false);
+  const buttons=`<div class="coach-actions"><button class="secondary" data-action="hint">💡 ${n<2?'Bantu sedikit lagi':'Baca petunjuk lagi'}</button><button class="secondary" data-action="coachListen">🔊 Dengarkan</button></div>`;
+  if(popup){
+    showDialog(`<section class="retry-popup" aria-labelledby="retryTitle"><div class="retry-mascot" aria-hidden="true">🤖 🌱</div><h2 id="retryTitle" tabindex="-1">Belum pas? Kita coba lagi, yuk!</h2><p class="retry-observation">${escapeHTML(diagnosis.text)}</p><div class="thinking-card"><span aria-hidden="true">💡</span><div><b>Coba pikirkan ini…</b><p>${escapeHTML(question)}</p></div></div>${buttons}<button class="primary retry-button" data-action="tryAgain">✋ Coba lagi</button><p id="retryVoiceNotice" role="status" class="mini-help"></p></section>`);
+    dialog.dataset.feedback='true';
+    dialog.setAttribute('aria-labelledby','retryTitle');
+    $('#retryTitle')?.focus();
+  }else{
+    const coach=$('#coach');
+    if(coach)coach.innerHTML=`<div class="thinking-card"><span aria-hidden="true">🌱</span><div><b>Bimo punya pertanyaan</b><p>${escapeHTML(question)}</p>${buttons}<button class="secondary" data-action="tryAgain">✋ Aku mau coba</button></div></div>`;
+  }
+  state.coachSpeech=`${diagnosis.text} ${question}`;speak(state.coachSpeech);
   if(diagnosis.focus)document.querySelector(diagnosis.focus)?.classList.add('clue-focus');
   reactBimo('think');
-  if(isRetry)$('#status')?.scrollIntoView({behavior:'auto',block:'nearest'});
 }
 function reactBimo(mood='happy') {
   const face=$('#bimoBuddy');if(!face)return;
@@ -67,8 +78,8 @@ function decoratePlay() {
 }
 function playfulAction(a,v) {
   if(a==='buddy'){state.highFives=(state.highFives||0)+1;reactBimo('happy');setStatus(['Tos! 🖐️ Aku senang kamu mau mencoba.','Bip-bip! 🤖 Kita pikirkan satu langkah dulu.','Kamu boleh salah. Kita bisa coba cara lain! 🌱'][(state.highFives-1)%3]);return true;}
-  if(a==='coachListen'){if('speechSynthesis'in window)speak(state.coachSpeech||initialMessage(),true);else setStatus('Suara belum tersedia. Yuk, baca petunjuknya bersama pendamping.');return true;}
-  if(a==='tryAgain'){$('#coach').innerHTML='';document.querySelector('.clue-focus')?.scrollIntoView({block:'center',behavior:'auto'});setStatus('Yuk, ubah satu bagian dulu. Menurutmu, apa yang akan terjadi?');return true;}
+  if(a==='coachListen'){if('speechSynthesis'in window)speak(state.coachSpeech||initialMessage(),true);else if(dialog.open&&dialog.dataset.feedback==='true')$('#retryVoiceNotice').textContent='Suara belum tersedia. Yuk, baca bersama pendamping.';else setStatus('Suara belum tersedia. Yuk, baca petunjuknya bersama pendamping.');return true;}
+  if(a==='tryAgain'){const target=document.querySelector('.clue-focus');if(dialog.open&&dialog.dataset.feedback==='true')dialog.close();BimoVoice.stop();$('#coach').innerHTML='';setStatus('Yuk, ubah satu bagian dulu. Menurutmu, apa yang akan terjadi?','',false);target?.scrollIntoView({block:'center',behavior:'auto'});target?.focus();return true;}
   if(a==='crossMode'){state.crossMode=!state.crossMode;renderGame();setStatus(state.crossMode?'Ketuk gambar yang menurutmu tidak cocok. Ketuk lagi kalau berubah pikiran.':'Sekarang ketuk satu gambar untuk jawabanmu.');return true;}
   if(a==='suspect'&&state.crossMode){state.crossed??=[];const i=state.crossed.indexOf(+v);if(i>=0)state.crossed.splice(i,1);else state.crossed.push(+v);if(state.answer===+v)state.answer=null;renderGame();animatePlay(`[data-action="suspect"][data-value="${v}"]`);return true;}
   if(a==='countDots'){const b=+(v||0);if(state.countBag!==b)state.dotCount=0;state.countBag=b;const total=m.cards.reduce((s,c,i)=>s+(state.answer[i]===b?c.value:0),0);state.dotCount=total?((state.dotCount||0)%total)+1:0;$('#countingDots').textContent=total?`Tas ${b+1}: ${'● '.repeat(state.dotCount)} ${state.dotCount}${state.dotCount===total?' · Semua titik di tas ini sudah dihitung!':''}`:'Tas masih kosong. Masukkan satu bekal dulu, ya.';speak(total?String(state.dotCount):'Tas masih kosong.');animatePlay(`[data-action="bag"][data-value="${b}"]`);return true;}
