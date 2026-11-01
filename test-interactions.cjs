@@ -10,6 +10,18 @@ const drop=(kind,value,type,index)=>run(`applyDrop(${JSON.stringify(kind)},${JSO
 for(let level=0;level<5;level++)for(let type=0;type<10;type++)open(level*200+type);
 open(1);assert(drop('sort',0,'sort',1));assert.equal(run('state.answer[0]'),1);assert(drop('sort',0,'sort',0));assert.equal(run('state.answer[0]'),0);
 assert.equal(drop('sort',1,'packing',0),false);assert.equal(run('state.answer[1]'),-1);
+// Sorting keeps one visible copy per card and only accepts return to its original slot.
+for(const id of [1,201,401,601,801]){
+ open(id);drop('sort',0,'sort',0);drop('sort',1,'sort',1);
+ const board=run('sortBoard()');assert.equal((board.match(/data-card-index="0"/g)||[]).length,1);assert.match(board,/data-action="returnSort" data-value="0"/);
+ assert.equal(drop('sort',0,'sort-slot',1),false);assert.equal(run('state.answer[0]'),0);
+ assert(drop('sort',0,'sort',1));assert.equal(run('state.answer[0]'),1);
+ assert(drop('sort',0,'sort-slot',0));assert.equal(run('state.answer[0]'),-1);assert.equal(run('state.answer[1]'),1);
+ assert.equal(drop('sort',0,'sort-slot',0),false);assert.equal(drop('sort',0,'sort',99),false);
+ drop('sort',0,'sort',0);run("action('select','0');action('returnSort','0')");assert.equal(run('state.answer[0]'),-1);
+ run("action('reset')");assert.equal(run('state.answer.every(v=>v===-1)'),true);
+}
+console.log('PASS: sorting card uniqueness, stable origin slots, house-to-house transfer, return by drag/tap, wrong-slot rejection and reset across all five difficulties.');
 open(9);drop('packing',0,'packing',0);assert.equal(run('state.answer[0]'),0);run("action('provision','0')");assert.equal(run('state.answer[0]'),-1);
 open(2);drop('pattern',0,'pattern',0);assert.equal(run('E.cardKey(state.answer[0])'),run('E.cardKey(m.choices[0])'));assert.equal(run('state.selection'),null);
 open(4);const blank=run('m.clues.indexOf(-1)'),fixed=run('m.clues.findIndex(v=>v>=0)');drop('matrix',0,'matrix',blank);assert.equal(run(`state.answer[${blank}]`),0);assert.equal(drop('matrix',1,'matrix',fixed),false);
@@ -67,8 +79,9 @@ ctx.setTimeout=f=>{f();return 0;};
   open(7);run("state.program=[{type:String((+m.target[0]+1)%4)}]");await run('check()');assert.match(elements.get('#status').textContent,/bunyi nomor 1/);assert.equal(run('state.busy'),false);
   open(1);await run('check()');assert.match(elements.get('#status').textContent,/belum punya rumah/);
   run("playfulAction('tryAgain');action('select','0');action('bin','0')");assert.equal(elements.get('#dialog').open,false);assert.equal(elements.get('#coach').innerHTML,'');
-  open(0);run('state.testOther=m.cards.findIndex(c=>c.pair!==m.cards[0].pair)');await run('memory(0)');await run('memory(state.testOther)');assert.equal(elements.get('#dialog').open,true);assert.equal(run('state.busy'),false);assert.equal(run('state.flipped.length'),0);
-  run('hint()');assert.equal(elements.get('#dialog').open,true);assert.match(elements.get('#dialog').innerHTML,/Coba pikirkan/);run("playfulAction('tryAgain')");assert.equal(elements.get('#dialog').open,false);
+  open(0);run('state.testOther=m.cards.findIndex(c=>c.pair!==m.cards[0].pair)');await run('memory(0)');await run('memory(state.testOther)');assert.equal(elements.get('#dialog').open,false);assert.match(elements.get('#status').textContent,/Gambarnya/);assert.equal(run('state.busy'),false);assert.equal(run('state.flipped.length'),0);
+  await run('memory(0)');assert.equal(run('state.flipped.length'),1);assert.equal(elements.get('#dialog').open,false);
+  run('hint()');assert.equal(elements.get('#dialog').open,false);assert.match(elements.get('#coach').innerHTML,/Bimo punya pertanyaan/);run("playfulAction('tryAgain')");assert.equal(elements.get('#dialog').open,false);
   open(6);await run('check()');assert.equal(elements.get('#dialog').open,true);assert.match(elements.get('#dialog').innerHTML,/masih kosong/);run('hint()');assert.match(elements.get('#dialog').innerHTML,/masih kosong/);
   console.log('PASS: per-bag counting, blocked route and wrong music feedback after playback, unfinished sorting feedback, and clearing stale clues after edits.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
