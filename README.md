@@ -122,7 +122,7 @@ Potongan puzzle dan kartu perintah bergeser dari posisi sebelumnya. Bimo melangk
 
 ## Menu permainan dan jalur level
 
-Menu utama berisi 13 kartu permainan besar dengan progres bintang masing-masing. Setiap pilihan membuka hanya level permainan itu. Sepuluh permainan awal memiliki 100 level (20 tema per tingkat); tiga tambahan memiliki masing-masing 15 level: Sebab Akibat, Urutan Cerita, dan Detektif Kode. Dengan tambahan Piksel Ajaib, total 1.060 misi.
+Menu utama berisi 13 kartu permainan besar dengan progres bintang masing-masing. Setiap pilihan membuka hanya level permainan itu. Sepuluh permainan awal memiliki 100 level (20 tema per tingkat); tiga tambahan memiliki masing-masing 15 level: Sebab Akibat, Urutan Cerita, dan Detektif Kode. Dengan tambahan Piksel Ajaib, total 1.145 misi.
 
 Level dibuka berurutan setelah berhasil; tombol lanjut tetap berada di jenis yang sama. Level selesai bisa diulang tanpa menambah bintang ganda. ID 1.000 misi lama tetap sama dan cadangan versi 3 tetap bisa diimpor. Progres lama yang melompati level tetap tersimpan dan bisa diulang; isi level yang terlewati untuk melanjutkan jalur. `journey.js` mengatur navigasi dan pembukaan level, `lessons.js` berisi permainan baru. Urutan Cerita dan Detektif Kode mendukung seret atau ketuk dua kartu untuk bertukar tempat.
 
@@ -139,8 +139,8 @@ Generator memeriksa isi tantangan tanpa memakai ID, nama tema, atau label tingka
 
 ## Piksel Ajaib
 
-Permainan ke-14 memiliki 15 gambar unik: hati, jamur, ikan, pohon apel, gunung, bunga, burung, kura-kura, kucing, paus, kupu-kupu, macan, dinosaurus, roket, dan planet bercincin. Lima tahap masing-masing berisi tiga level: 4×4 / 2 warna, 5×5 / 3 warna, 6×6 / 4 warna, 8×8 / 5 warna, dan 10×10 / 6 warna. Bentuk gambar berbeda, bukan variasi warna dari gambar yang sama.
+Permainan ke-14 memiliki 100 gambar unik, dibagi menjadi lima tingkat berisi 20 gambar. Papan bertambah dari 6×6, 8×8, 10×10, 12×12 hingga 14×14. Mulai dari benda sederhana (apel, payung, balon), lalu hewan dengan ciri khas, hingga dinosaurus, kendaraan, dan pemandangan. Jumlah warna bervariasi sesuai objek, dengan palet lebih kaya di tingkat akhir. ID 15 gambar awal dipertahankan agar bintang lama tetap tersimpan.
 
 Pilih warna lalu ketuk atau usap papan untuk meniru contoh. Nomor warna membantu membedakan warna; latar berpola kotak berarti kosong. Penghapus mengosongkan kotak, Urungkan membatalkan satu sapuan, dan Ulang membersihkan papan. Petunjuk mengarahkan ke baris/kotak yang perlu dibandingkan, tanpa mengecat jawaban. Level berikutnya terbuka sesudah berhasil. ID 0–1044 dan progres lama tetap berlaku; gambar baru memakai ID 1045–1059.
 
-`dist/pixel.js` menyimpan gambar dan interaksi. `node test-pixel.cjs` memeriksa keunikan siluet, ukuran papan, jumlah warna, dan solusi. `node test-interactions.cjs` juga memeriksa penghapus, urungkan, reset, petunjuk, pembukaan level, dan bintang tanpa duplikasi. Uji browser mencakup sapuan, urungkan, dan penyelesaian level.
+`dist/pixel-data.js` menyimpan 100 gambar; `dist/pixel.js` mengatur misi dan interaksi. `node test-pixel.cjs` memeriksa keunikan siluet, ukuran papan, jumlah warna, dan solusi. `node test-interactions.cjs` juga memeriksa penghapus, urungkan, reset, petunjuk, pembukaan level, dan bintang tanpa duplikasi. Uji browser mencakup sapuan, urungkan, dan penyelesaian level.
