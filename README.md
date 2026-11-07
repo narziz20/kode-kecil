@@ -102,7 +102,7 @@ Ini tetap sintesis suara bawaan browser, bukan rekaman pengisi suara atau layana
 
 ## Popup saat jawaban belum tepat
 
-Pemeriksaan jawaban yang belum tepat membuka dialog dengan penjelasan, satu pertanyaan pemantik, bantuan lanjutan, tombol dengarkan, dan “Coba lagi”. Jawaban anak tetap tersimpan. Bantuan berikutnya tetap di dalam dialog; tombol coba lagi kembali ke bagian permainan yang perlu diperiksa. Dialog juga bisa ditutup dengan × atau Escape. Pada memori, dua kartu diperlihatkan sekitar satu detik sebelum popup muncul. Program kosong, jalur terhalang, dan syarat kartu khusus yang belum dipenuhi memakai popup yang sama. Petunjuk yang diminta sendiri di luar popup tetap tersedia di bawah permainan.
+Pemeriksaan jawaban yang belum tepat membuka dialog dengan penjelasan, satu pertanyaan pemantik, bantuan lanjutan, tombol dengarkan, dan “Coba lagi”. Jawaban anak tetap tersimpan. Bantuan berikutnya tetap di dalam dialog; tombol coba lagi kembali ke bagian permainan yang perlu diperiksa. Dialog juga bisa ditutup dengan × atau Escape. Pada memori, dua kartu diperlihatkan sekitar satu detik, lalu ditutup tanpa popup; petunjuk tetap muncul di papan. Program kosong, jalur terhalang, dan syarat kartu khusus yang belum dipenuhi memakai popup yang sama. Petunjuk yang diminta sendiri di luar popup tetap tersedia di bawah permainan.
 
 Pengujian mencakup popup setelah pemeriksaan, bantuan lanjutan di dialog, kembali mencoba tanpa reset jawaban, kegagalan memori, program kosong, serta popup setelah program dijalankan. Alur buka–bantuan lanjutan–coba lagi diperiksa langsung di browser.
 
@@ -122,7 +122,7 @@ Potongan puzzle dan kartu perintah bergeser dari posisi sebelumnya. Bimo melangk
 
 ## Menu permainan dan jalur level
 
-Menu utama berisi 13 kartu permainan besar dengan progres bintang masing-masing. Setiap pilihan membuka hanya level permainan itu. Sepuluh permainan awal memiliki 100 level (20 tema per tingkat); tiga tambahan memiliki masing-masing 15 level: Sebab Akibat, Urutan Cerita, dan Detektif Kode. Total 1.045 misi.
+Menu utama berisi 13 kartu permainan besar dengan progres bintang masing-masing. Setiap pilihan membuka hanya level permainan itu. Sepuluh permainan awal memiliki 100 level (20 tema per tingkat); tiga tambahan memiliki masing-masing 15 level: Sebab Akibat, Urutan Cerita, dan Detektif Kode. Dengan tambahan Piksel Ajaib, total 1.060 misi.
 
 Level dibuka berurutan setelah berhasil; tombol lanjut tetap berada di jenis yang sama. Level selesai bisa diulang tanpa menambah bintang ganda. ID 1.000 misi lama tetap sama dan cadangan versi 3 tetap bisa diimpor. Progres lama yang melompati level tetap tersimpan dan bisa diulang; isi level yang terlewati untuk melanjutkan jalur. `journey.js` mengatur navigasi dan pembukaan level, `lessons.js` berisi permainan baru. Urutan Cerita dan Detektif Kode mendukung seret atau ketuk dua kartu untuk bertukar tempat.
 
@@ -135,3 +135,12 @@ Sidebar desktop berisi identitas Bimo, total bintang, dan navigasi; di ponsel be
 Ketiga belas permainan memakai area bermain ringkas, kartu besar, panel putih, tombol timbul, dan bantuan terlipat. Petunjuk detektif serta urutan mesin memakai simbol visual.
 
 Generator memeriksa isi tantangan tanpa memakai ID, nama tema, atau label tingkat sebagai pembeda. Kandidat yang identik dibuat ulang dengan seed deterministik; level tetap sama saat dimainkan ulang. Irama awal memakai tiga bunyi dari empat instrumen, dan posisi awal rute dapat bervariasi. Cerita baru mencakup 30 cerita berbeda, sedangkan Sebab Akibat memakai 15 situasi dengan rangkaian soal bertambah. Nomor misi serta bintang lama tetap dipertahankan; beberapa isi level yang sebelumnya duplikat diperbarui. `node test-variety.cjs` memeriksa keunikan 1.045 tantangan, solusi, kestabilan saat membuka level dalam urutan berbeda, serta isolasi cache.
+
+
+## Piksel Ajaib
+
+Permainan ke-14 memiliki 15 gambar unik: hati, jamur, ikan, pohon apel, gunung, bunga, burung, kura-kura, kucing, paus, kupu-kupu, macan, dinosaurus, roket, dan planet bercincin. Lima tahap masing-masing berisi tiga level: 4×4 / 2 warna, 5×5 / 3 warna, 6×6 / 4 warna, 8×8 / 5 warna, dan 10×10 / 6 warna. Bentuk gambar berbeda, bukan variasi warna dari gambar yang sama.
+
+Pilih warna lalu ketuk atau usap papan untuk meniru contoh. Nomor warna membantu membedakan warna; latar berpola kotak berarti kosong. Penghapus mengosongkan kotak, Urungkan membatalkan satu sapuan, dan Ulang membersihkan papan. Petunjuk mengarahkan ke baris/kotak yang perlu dibandingkan, tanpa mengecat jawaban. Level berikutnya terbuka sesudah berhasil. ID 0–1044 dan progres lama tetap berlaku; gambar baru memakai ID 1045–1059.
+
+`dist/pixel.js` menyimpan gambar dan interaksi. `node test-pixel.cjs` memeriksa keunikan siluet, ukuran papan, jumlah warna, dan solusi. `node test-interactions.cjs` juga memeriksa penghapus, urungkan, reset, petunjuk, pembukaan level, dan bintang tanpa duplikasi. Uji browser mencakup sapuan, urungkan, dan penyelesaian level.

@@ -1,6 +1,7 @@
 'use strict';
 // Pointer events support mouse, pen and touch; native buttons remain usable by keyboard.
 const playGuides = {
+  pixel:['Tiru gambar kotaknya!', '👀 Lihat gambar contoh', '🎨 Pilih warna', '🖌️ Ketuk atau usap kotak'],
   memory: ['Cari dua kartu kembar!', '👆 Buka kartu', '👀 Ingat gambar + warna', '🐾 Temukan kembarnya'],
   cause:['Apa yang terjadi berikutnya?', '👀 Lihat kejadian', '🤔 Pikirkan akibatnya', '👆 Pilih gambar'],
   sequence:['Susun ceritanya!', '👀 Lihat semua gambar', '✋ Tukar tempat', '✅ Cek urutannya'],
@@ -17,7 +18,7 @@ const playGuides = {
 };
 function childGuide() {
   const [title, ...steps] = playGuides[m.type];
-  return `<section class="bimo-guide" aria-label="Cara bermain"><button id="bimoBuddy" class="bimo-buddy" data-action="buddy" aria-label="Tos dengan Bimo"><span class="buddy-antenna" aria-hidden="true">✦</span><span class="buddy-face" aria-hidden="true"><i></i><i></i><span class="buddy-mouth"></span></span><small>Tos! 🖐️</small></button><div><b>${title}</b><ol>${steps.map(s=>`<li>${s}</li>`).join('')}</ol><small>${['memory','detective','cause'].includes(m.type)?'Pelan-pelan saja. Aku menemanimu!':'Pegang kartu, geser, lalu lepaskan. Ketuk kartu dan tujuannya juga boleh.'}</small><details class="how-demo"><summary>👀 Tunjukkan caranya</summary><div class="demo-stage ${['memory','detective','cause'].includes(m.type)?'demo-tap':''}" aria-hidden="true"><span class="demo-hand">☝️</span><span class="demo-card">${({cause:'☂️',sequence:'🌱',debug:'🔧',memory:'🐾',detective:'🔎',route:'↑',music:'🥁',factory:'🎨',packing:'🍎',sort:'🦁',matrix:'🌼',pattern:'🐾',mosaic:'🧩'})[m.type]}</span><span class="demo-home">${m.type==='sort'?'🏡':m.type==='packing'?'🎒':'⬚'}</span></div><p>${['memory','detective','cause'].includes(m.type)?'Ketuk kartu. Lihat gambarnya baik-baik.':'Pegang satu kartu → geser ke tempatnya → lepaskan.'} Coba sendiri, yuk!</p></details></div></section>`;
+  return `<section class="bimo-guide" aria-label="Cara bermain"><button id="bimoBuddy" class="bimo-buddy" data-action="buddy" aria-label="Tos dengan Bimo"><span class="buddy-antenna" aria-hidden="true">✦</span><span class="buddy-face" aria-hidden="true"><i></i><i></i><span class="buddy-mouth"></span></span><small>Tos! 🖐️</small></button><div><b>${title}</b><ol>${steps.map(s=>`<li>${s}</li>`).join('')}</ol><small>${['memory','detective','cause','pixel'].includes(m.type)?'Pelan-pelan saja. Aku menemanimu!':'Pegang kartu, geser, lalu lepaskan. Ketuk kartu dan tujuannya juga boleh.'}</small><details class="how-demo"><summary>👀 Tunjukkan caranya</summary><div class="demo-stage ${['memory','detective','cause','pixel'].includes(m.type)?'demo-tap':''}" aria-hidden="true"><span class="demo-hand">☝️</span><span class="demo-card">${({pixel:'🎨',cause:'☂️',sequence:'🌱',debug:'🔧',memory:'🐾',detective:'🔎',route:'↑',music:'🥁',factory:'🎨',packing:'🍎',sort:'🦁',matrix:'🌼',pattern:'🐾',mosaic:'🧩'})[m.type]}</span><span class="demo-home">${m.type==='sort'?'🏡':m.type==='packing'?'🎒':'⬚'}</span></div><p>${['memory','detective','cause','pixel'].includes(m.type)?'Ketuk kartu. Lihat gambarnya baik-baik.':'Pegang satu kartu → geser ke tempatnya → lepaskan.'} Coba sendiri, yuk!</p></details></div></section>`;
 }
 function preparePlay() {
   const game = $('#game');
